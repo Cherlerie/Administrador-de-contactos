@@ -38,7 +38,6 @@ namespace Registro_de_contactos
             }
         }
 
-
         private void GetDatos()
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -89,36 +88,15 @@ namespace Registro_de_contactos
             }
         }
 
-        private void btnAgregar_Click(object sender, EventArgs e)
-        {
-            CrearContacto(txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
-        }
-
-        private void btnEditar_Click(object sender, EventArgs e)
-        {
-
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MessageBox.Show("Ingresa el nombre del contacto a editar.");
-                return;
-            }
-
-        }
-
-        private void btnEliminar_Click(object sender, EventArgs e)
-        {
-            EliminarContacto(txtNombre.Text);
-        }
-
-        private void btnBuscar_Click(object sender, EventArgs e)
+        private void BuscarContacto(string nombre)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM Contacto WHERE Nombre = @Nombre";
+                string query = "SELECT * FROM Contacto WHERE Nombre LIKE @Nombre";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@Nombre", $"%{nombre}%");
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
@@ -129,14 +107,57 @@ namespace Registro_de_contactos
             }
         }
 
-        private void txtDescripcion_TextChanged(object sender, EventArgs e)
+        private void btnAgregar_Click(object sender, EventArgs e)
         {
-
+            CrearContacto(txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
         }
 
-        private void txtDireccion_TextChanged(object sender, EventArgs e)
+        private void btnEditar_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Ingresa el nombre del contacto a editar.");
+                return;
+            }
 
+            ActualizarContacto(txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
         }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Ingresa el nombre del contacto a eliminar.");
+                return;
+            }
+
+            EliminarContacto(txtNombre.Text);
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Ingresa el nombre del contacto a buscar.");
+                return;
+            }
+
+            BuscarContacto(txtNombre.Text);
+        }
+   
+private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                txtNombre.Text = row.Cells["Nombre"].Value.ToString();
+                txtNumero.Text = row.Cells["Telefono"].Value.ToString();
+                txtDescripcion.Text = row.Cells["Descripcion"].Value.ToString();
+                txtDireccion.Text = row.Cells["Direccion"].Value.ToString();
+            }
+        }
+
     }
+
 }
