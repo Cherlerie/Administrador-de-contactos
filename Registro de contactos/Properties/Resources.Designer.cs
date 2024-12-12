@@ -69,5 +69,15 @@ namespace Registro_de_contactos.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap f723fbe018b295938155a71548f7925b {
+            get {
+                object obj = ResourceManager.GetObject("f723fbe018b295938155a71548f7925b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
