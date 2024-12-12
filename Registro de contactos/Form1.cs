@@ -24,7 +24,7 @@ namespace Registro_de_contactos
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "INSERT INTO Contactos (Nombre, Telefono, Descripcion, Direccion) VALUES (@Nombre, @Telefono, @Descripcion, @Direccion)";
+                string query = "INSERT INTO Contacto (Nombre, Telefono, Descripcion, Direccion) VALUES (@Nombre, @Telefono, @Descripcion, @Direccion)";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nombre", nombre);
@@ -44,7 +44,7 @@ namespace Registro_de_contactos
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM Contactos";
+                string query = "SELECT * FROM Contacto";
                 using (SqlDataAdapter adapter = new SqlDataAdapter(query, conn))
                 {
                     DataTable dt = new DataTable();
@@ -54,16 +54,18 @@ namespace Registro_de_contactos
             }
         }
 
-        private void ActualizarContacto(string nombreNuevo, string telefonoNuevo)
+        private void ActualizarContacto(string nombre, string telefono, string descripcion, string direccion)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "UPDATE Contactos SET Nombre = @NombreNuevo, Telefono = @TelefonoNuevo WHERE Nombre = @NombreAntiguo";
+                string query = "UPDATE Contacto SET Telefono = @Telefono, Descripcion = @Descripcion, Direccion = @Direccion WHERE Nombre = @Nombre";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@NombreNuevo", nombreNuevo);
-                    cmd.Parameters.AddWithValue("@TelefonoNuevo", telefonoNuevo);
+                    cmd.Parameters.AddWithValue("@Nombre", nombre);
+                    cmd.Parameters.AddWithValue("@Telefono", telefono);
+                    cmd.Parameters.AddWithValue("@Descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("@Direccion", direccion);
                     cmd.ExecuteNonQuery();
                 }
                 MessageBox.Show("Contacto actualizado exitosamente.");
@@ -76,7 +78,7 @@ namespace Registro_de_contactos
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "DELETE FROM Contactos WHERE Nombre = @Nombre";
+                string query = "DELETE FROM Contacto WHERE Nombre = @Nombre";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nombre", nombre);
@@ -94,11 +96,13 @@ namespace Registro_de_contactos
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            
-            string nombreNuevo = txtNombre.Text;
-            string telefonoNuevo = txtNumero.Text;
 
-            ActualizarContacto(nombreNuevo, telefonoNuevo);
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Ingresa el nombre del contacto a editar.");
+                return;
+            }
+
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
@@ -111,7 +115,7 @@ namespace Registro_de_contactos
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM Contactos WHERE Nombre = @Nombre";
+                string query = "SELECT * FROM Contacto WHERE Nombre = @Nombre";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
