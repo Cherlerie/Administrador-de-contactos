@@ -19,22 +19,25 @@ namespace Registro_de_contactos
             GetDatos();
         }
 
-        private void CrearContacto(string nombre, string telefono)
+        private void CrearContacto(string nombre, string telefono, string descripcion, string direccion)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "INSERT INTO Contactos (Nombre, Telefono) VALUES (@Nombre, @Telefono)";
+                string query = "INSERT INTO Contactos (Nombre, Telefono, Descripcion, Direccion) VALUES (@Nombre, @Telefono, @Descripcion, @Direccion)";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Nombre", nombre);
                     cmd.Parameters.AddWithValue("@Telefono", telefono);
+                    cmd.Parameters.AddWithValue("@Descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("@Direccion", direccion);
                     cmd.ExecuteNonQuery();
                 }
                 MessageBox.Show("Contacto agregado exitosamente.");
                 GetDatos();
             }
         }
+
 
         private void GetDatos()
         {
@@ -86,7 +89,7 @@ namespace Registro_de_contactos
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            CrearContacto(txtNombre.Text, txtNumero.Text);
+            CrearContacto(txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
@@ -120,6 +123,16 @@ namespace Registro_de_contactos
                     }
                 }
             }
+        }
+
+        private void txtDescripcion_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtDireccion_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
