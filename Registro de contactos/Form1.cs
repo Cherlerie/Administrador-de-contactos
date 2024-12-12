@@ -53,24 +53,35 @@ namespace Registro_de_contactos
             }
         }
 
-        private void ActualizarContacto(string nombre, string telefono, string descripcion, string direccion)
+        private void ActualizarContacto(int id, string nombre, string telefono, string descripcion, string direccion)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "UPDATE Contacto SET Telefono = @Telefono, Descripcion = @Descripcion, Direccion = @Direccion WHERE Nombre = @Nombre";
+                string query = "UPDATE Contacto SET Nombre = @Nombre, Telefono = @Telefono, Descripcion = @Descripcion, Direccion = @Direccion WHERE ID = @ID";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
+                    cmd.Parameters.AddWithValue("@ID", id);
                     cmd.Parameters.AddWithValue("@Nombre", nombre);
                     cmd.Parameters.AddWithValue("@Telefono", telefono);
                     cmd.Parameters.AddWithValue("@Descripcion", descripcion);
                     cmd.Parameters.AddWithValue("@Direccion", direccion);
-                    cmd.ExecuteNonQuery();
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        GetDatos(); // Refrescar el DataGridView
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontró el contacto para actualizar.");
+                    }
                 }
-                MessageBox.Show("Contacto actualizado exitosamente.");
-                GetDatos();
             }
         }
+
+
 
         private void EliminarContacto(string nombre)
         {
@@ -114,13 +125,15 @@ namespace Registro_de_contactos
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            if (contactoID == -1)
             {
-                MessageBox.Show("Ingresa el nombre del contacto a editar.");
+                MessageBox.Show("Selecciona un contacto del DataGrid para actualizar.");
                 return;
             }
 
-            ActualizarContacto(txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
+            ActualizarContacto(contactoID, txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
+            contactoID = -1; // Reiniciar el ID después de la actualización
+
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
@@ -144,13 +157,15 @@ namespace Registro_de_contactos
 
             BuscarContacto(txtNombre.Text);
         }
-   
-private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private int contactoID = -1;
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         
         {
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                contactoID = Convert.ToInt32(row.Cells["ID"].Value); // Obtener el ID del registro seleccionado
                 txtNombre.Text = row.Cells["Nombre"].Value.ToString();
                 txtNumero.Text = row.Cells["Telefono"].Value.ToString();
                 txtDescripcion.Text = row.Cells["Descripcion"].Value.ToString();
