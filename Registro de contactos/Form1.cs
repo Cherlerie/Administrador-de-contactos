@@ -71,7 +71,7 @@ namespace Registro_de_contactos
 
                     if (rowsAffected > 0)
                     {
-                        GetDatos(); // Refrescar el DataGridView
+                        GetDatos();
                     }
                     else
                     {
@@ -132,7 +132,7 @@ namespace Registro_de_contactos
             }
 
             ActualizarContacto(contactoID, txtNombre.Text, txtNumero.Text, txtDescripcion.Text, txtDireccion.Text);
-            contactoID = -1; // Reiniciar el ID después de la actualización
+            contactoID = -1; 
 
         }
 
@@ -165,7 +165,7 @@ namespace Registro_de_contactos
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                contactoID = Convert.ToInt32(row.Cells["ID"].Value); // Obtener el ID del registro seleccionado
+                contactoID = Convert.ToInt32(row.Cells["ID"].Value); 
                 txtNombre.Text = row.Cells["Nombre"].Value.ToString();
                 txtNumero.Text = row.Cells["Telefono"].Value.ToString();
                 txtDescripcion.Text = row.Cells["Descripcion"].Value.ToString();
